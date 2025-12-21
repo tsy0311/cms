@@ -13,7 +13,9 @@ exports.getProducts = async (req, res) => {
       search,
       status = 'active',
       featured,
-      sort = '-createdAt'
+      sort = '-createdAt',
+      minPrice,
+      maxPrice
     } = req.query;
 
     // Build query
@@ -33,6 +35,17 @@ exports.getProducts = async (req, res) => {
     
     if (search) {
       query.$text = { $search: search };
+    }
+
+    // Price filtering
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) {
+        query.price.$gte = parseFloat(minPrice);
+      }
+      if (maxPrice) {
+        query.price.$lte = parseFloat(maxPrice);
+      }
     }
 
     // Execute query
@@ -85,6 +98,42 @@ exports.getProduct = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching product',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get related products
+// @route   GET /api/products/:id/related
+// @access  Public
+exports.getRelatedProducts = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    const relatedProducts = await Product.find({
+      _id: { $ne: product._id },
+      category: product.category,
+      status: 'active'
+    })
+      .limit(4)
+      .populate('category', 'name');
+
+    res.json({
+      success: true,
+      count: relatedProducts.length,
+      data: relatedProducts
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching related products',
       error: error.message
     });
   }

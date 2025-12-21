@@ -74,7 +74,7 @@ exports.getOrder = async (req, res) => {
 // @access  Private
 exports.createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, billingAddress, paymentMethod, notes } = req.body;
+    const { items, shippingAddress, billingAddress, paymentMethod, notes, couponCode } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({
@@ -125,7 +125,30 @@ exports.createOrder = async (req, res) => {
     const taxRate = 0.08; // 8% - should come from config
     const tax = subtotal * taxRate;
     const shipping = subtotal >= 50 ? 0 : 5.99; // Free shipping over $50
-    const total = subtotal + tax + shipping;
+    
+    // Apply coupon if provided
+    let discount = 0;
+    if (couponCode) {
+      const Coupon = require('../models/Coupon');
+      const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
+      if (coupon && coupon.isValid() && subtotal >= coupon.minPurchase) {
+        if (coupon.discountType === 'percentage') {
+          discount = (subtotal * coupon.discountValue) / 100;
+          if (coupon.maxDiscount && discount > coupon.maxDiscount) {
+            discount = coupon.maxDiscount;
+          }
+        } else {
+          discount = coupon.discountValue;
+          if (discount > subtotal) {
+            discount = subtotal;
+          }
+        }
+        coupon.usedCount += 1;
+        await coupon.save();
+      }
+    }
+    
+    const total = subtotal + tax + shipping - discount;
 
     const order = await Order.create({
       customer: req.user.id,
@@ -137,7 +160,9 @@ exports.createOrder = async (req, res) => {
       shippingAddress,
       billingAddress: billingAddress || shippingAddress,
       paymentMethod,
-      notes
+      notes,
+      couponCode: couponCode || undefined,
+      discount
     });
 
     res.status(201).json({

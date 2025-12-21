@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/Toast';
 
 export default function Checkout() {
   const { cart, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     shippingName: user?.name || '',
     shippingStreet: '',
@@ -18,11 +20,16 @@ export default function Checkout() {
     shippingPhone: '',
     paymentMethod: 'credit_card',
   });
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
 
-  const tax = getCartTotal() * 0.08;
-  const shipping = getCartTotal() >= 50 ? 0 : 5.99;
-  const total = getCartTotal() + tax + shipping;
+  const subtotal = getCartTotal();
+  const tax = subtotal * 0.08;
+  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const discount = appliedCoupon ? appliedCoupon.discount : 0;
+  const total = subtotal + tax + shipping - discount;
 
   const handleChange = (e) => {
     setFormData({
@@ -31,8 +38,41 @@ export default function Checkout() {
     });
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      showToast('Please enter a coupon code', 'warning');
+      return;
+    }
+
+    setValidatingCoupon(true);
+    try {
+      const response = await axios.post('/api/coupons/validate', {
+        code: couponCode,
+        amount: subtotal
+      });
+      setAppliedCoupon(response.data.data);
+      showToast('Coupon applied successfully!', 'success');
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Invalid coupon code', 'error');
+      setAppliedCoupon(null);
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      showToast('Please login to continue', 'warning');
+      navigate('/login');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -51,14 +91,15 @@ export default function Checkout() {
           phone: formData.shippingPhone,
         },
         paymentMethod: formData.paymentMethod,
+        couponCode: appliedCoupon?.code,
       };
 
-      await axios.post('/api/orders', orderData);
+      const response = await axios.post('/api/orders', orderData);
       clearCart();
-      navigate('/');
-      alert('Order placed successfully!');
+      showToast('Order placed successfully!', 'success');
+      navigate(`/account?order=${response.data.data._id}`);
     } catch (error) {
-      alert('Error placing order: ' + (error.response?.data?.message || error.message));
+      showToast(error.response?.data?.message || 'Error placing order', 'error');
     } finally {
       setLoading(false);
     }
@@ -75,11 +116,29 @@ export default function Checkout() {
     );
   }
 
+  if (!user) {
+    return (
+      <div style={{ textAlign: 'center', padding: '3rem' }}>
+        <h2>Please login to checkout</h2>
+        <button className="btn btn-primary" onClick={() => navigate('/login')}>
+          Login
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <h1>Checkout</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
-        <div style={{ flex: 2 }}>
+      <h1 style={{ 
+        fontSize: '2.5rem', 
+        fontWeight: '800',
+        marginBottom: '2rem',
+        textTransform: 'uppercase'
+      }}>
+        Checkout
+      </h1>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: 2, minWidth: '300px' }}>
           <h2>Shipping Information</h2>
           <div className="form-group">
             <label>Full Name *</label>
@@ -167,14 +226,69 @@ export default function Checkout() {
             </select>
           </div>
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: '300px' }}>
           <div className="cart-summary">
             <h2>Order Summary</h2>
             <div className="cart-summary-row">
               <span>Subtotal:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="cart-summary-row">
+            
+            {/* Coupon Section */}
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #ddd' }}>
+              {!appliedCoupon ? (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input
+                    type="text"
+                    placeholder="Coupon code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    style={{
+                      flex: 1,
+                      padding: '0.5rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    className="btn btn-outline"
+                    disabled={validatingCoupon}
+                  >
+                    {validatingCoupon ? '...' : 'Apply'}
+                  </button>
+                </div>
+              ) : (
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '0.5rem',
+                  background: '#e8f5e9',
+                  borderRadius: '4px'
+                }}>
+                  <span style={{ fontSize: '0.9rem' }}>
+                    Coupon: {appliedCoupon.code} (-${discount.toFixed(2)})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#f44336',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="cart-summary-row" style={{ marginTop: '1rem' }}>
               <span>Tax:</span>
               <span>${tax.toFixed(2)}</span>
             </div>
@@ -182,6 +296,12 @@ export default function Checkout() {
               <span>Shipping:</span>
               <span>${shipping.toFixed(2)}</span>
             </div>
+            {appliedCoupon && (
+              <div className="cart-summary-row" style={{ color: '#4CAF50' }}>
+                <span>Discount:</span>
+                <span>-${discount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="cart-summary-row cart-summary-total">
               <span>Total:</span>
               <span>${total.toFixed(2)}</span>
@@ -200,4 +320,3 @@ export default function Checkout() {
     </div>
   );
 }
-

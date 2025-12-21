@@ -14,6 +14,9 @@ const categoryRoutes = require('./src/routes/categories');
 const orderRoutes = require('./src/routes/orders');
 const userRoutes = require('./src/routes/users');
 const uploadRoutes = require('./src/routes/upload');
+const reviewRoutes = require('./src/routes/reviews');
+const wishlistRoutes = require('./src/routes/wishlist');
+const couponRoutes = require('./src/routes/coupons');
 
 // Import middleware
 const { errorHandler } = require('./src/middleware/errorHandler');
@@ -48,6 +51,9 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/coupons', couponRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -87,6 +87,16 @@ const productSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  averageRating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  reviewCount: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

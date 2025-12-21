@@ -81,7 +81,13 @@ const orderSchema = new mongoose.Schema({
     default: 'pending'
   },
   notes: String,
-  trackingNumber: String
+  trackingNumber: String,
+  couponCode: String,
+  discount: {
+    type: Number,
+    default: 0,
+    min: 0
+  }
 }, {
   timestamps: true
 });
