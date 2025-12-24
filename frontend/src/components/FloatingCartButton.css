@@ -1,0 +1,127 @@
+.floating-cart-button {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 9998;
+  padding: 0;
+}
+
+.floating-cart-button:hover {
+  background-color: #FF6B9D;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+}
+
+.floating-cart-button:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.floating-cart-button svg {
+  width: 28px;
+  height: 28px;
+}
+
+.floating-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #dc004e;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .floating-cart-button {
+    width: 56px;
+    height: 56px;
+    bottom: 80px;
+    right: 15px;
+  }
+
+  .floating-cart-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .floating-cart-badge {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-cart-button {
+    width: 52px;
+    height: 52px;
+    bottom: 75px;
+    right: 15px;
+  }
+
+  .floating-cart-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .floating-cart-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    top: -2px;
+    right: -2px;
+  }
+}
+
+/* Safe area for mobile devices with notches */
+@supports (padding: max(0px)) {
+  .floating-cart-button {
+    bottom: max(90px, calc(60px + env(safe-area-inset-bottom) + 20px));
+    right: max(20px, env(safe-area-inset-right));
+  }
+
+  @media (max-width: 768px) {
+    .floating-cart-button {
+      bottom: max(80px, calc(56px + env(safe-area-inset-bottom) + 15px));
+      right: max(15px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .floating-cart-button {
+      bottom: max(75px, calc(52px + env(safe-area-inset-bottom) + 15px));
+      right: max(15px, env(safe-area-inset-right));
+    }
+  }
+}
+

@@ -27,7 +27,7 @@ export default function Checkout() {
 
   const subtotal = getCartTotal();
   const tax = subtotal * 0.08;
-  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const shipping = subtotal >= 200 ? 0 : 10.00; // RM200 for free shipping, RM10 shipping cost
   const discount = appliedCoupon ? appliedCoupon.discount : 0;
   const total = subtotal + tax + shipping - discount;
 
@@ -231,7 +231,7 @@ export default function Checkout() {
             <h2>Order Summary</h2>
             <div className="cart-summary-row">
               <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>RM{subtotal.toFixed(2)}</span>
             </div>
             
             {/* Coupon Section */}
@@ -269,7 +269,7 @@ export default function Checkout() {
                   borderRadius: '4px'
                 }}>
                   <span style={{ fontSize: '0.9rem' }}>
-                    Coupon: {appliedCoupon.code} (-${discount.toFixed(2)})
+                    Coupon: {appliedCoupon.code} (-RM{discount.toFixed(2)})
                   </span>
                   <button
                     type="button"
@@ -290,21 +290,21 @@ export default function Checkout() {
 
             <div className="cart-summary-row" style={{ marginTop: '1rem' }}>
               <span>Tax:</span>
-              <span>${tax.toFixed(2)}</span>
+              <span>RM{tax.toFixed(2)}</span>
             </div>
             <div className="cart-summary-row">
               <span>Shipping:</span>
-              <span>${shipping.toFixed(2)}</span>
+              <span>RM{shipping.toFixed(2)}</span>
             </div>
             {appliedCoupon && (
               <div className="cart-summary-row" style={{ color: '#4CAF50' }}>
                 <span>Discount:</span>
-                <span>-${discount.toFixed(2)}</span>
+                <span>-RM{discount.toFixed(2)}</span>
               </div>
             )}
             <div className="cart-summary-row cart-summary-total">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>RM{total.toFixed(2)}</span>
             </div>
             <button
               type="submit"

@@ -203,7 +203,7 @@ export default function Account() {
                           </p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <strong>${order.total.toFixed(2)}</strong>
+                          <strong>RM{order.total.toFixed(2)}</strong>
                           <p style={{ 
                             color: order.orderStatus === 'delivered' ? '#4CAF50' : '#FF9800',
                             fontSize: '0.9rem',
@@ -231,7 +231,7 @@ export default function Account() {
                             <div style={{ flex: 1 }}>
                               <p style={{ fontWeight: '600' }}>{item.name}</p>
                               <p style={{ color: '#666', fontSize: '0.9rem' }}>
-                                Qty: {item.quantity} × ${item.price.toFixed(2)}
+                                Qty: {item.quantity} × RM{item.price.toFixed(2)}
                               </p>
                             </div>
                           </div>
@@ -253,4 +253,6 @@ export default function Account() {
     </div>
   );
 }
+
+
 

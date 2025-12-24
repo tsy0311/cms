@@ -90,23 +90,24 @@ export default function Products() {
   return (
     <div>
       <div style={{ 
-        background: 'linear-gradient(135deg, #FF6B9D 0%, #FFB6C1 100%)',
+        background: 'linear-gradient(135deg, #000 0%, #333 100%)',
         padding: '3rem 2rem',
         textAlign: 'center',
         marginBottom: '3rem',
-        borderRadius: '8px'
+        borderRadius: '0',
+        color: 'white'
       }}>
         <h1 style={{ 
           fontSize: '3rem', 
           fontWeight: '800', 
-          color: '#000',
+          color: 'white',
           marginBottom: '1rem',
           textTransform: 'uppercase',
           letterSpacing: '2px'
         }}>
           Shop All
         </h1>
-        <p style={{ fontSize: '1.2rem', color: '#333' }}>
+        <p style={{ fontSize: '1.2rem', color: 'white', opacity: 0.9 }}>
           Explore our complete collection
         </p>
       </div>
@@ -270,28 +271,35 @@ export default function Products() {
           <div className="products-grid">
             {products.map((product) => (
               <div key={product._id} className="product-card">
-                <Link to={`/products/${product._id}`}>
+                <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <img
-                    src={product.images[0]?.url || '/placeholder.jpg'}
+                    src={product.images[0]?.url || 'https://placehold.co/500x500/000000/FFFFFF?text=Product'}
                     alt={product.name}
                     className="product-image"
+                    onError={(e) => {
+                      e.target.src = 'https://placehold.co/500x500/000000/FFFFFF?text=Product';
+                    }}
                   />
                   <div className="product-info">
                     <h3 className="product-name">{product.name}</h3>
-                    {product.averageRating > 0 && (
-                      <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                        {'★'.repeat(Math.round(product.averageRating))}
-                        {'☆'.repeat(5 - Math.round(product.averageRating))}
-                        <span style={{ marginLeft: '0.5rem', color: '#666' }}>
-                          ({product.reviewCount})
-                        </span>
+                    {(product.reviewCount > 0 || product.soldCount > 0) && (
+                      <div className="product-meta">
+                        {product.reviewCount > 0 && (
+                          <span>
+                            ({product.reviewCount} reviews
+                            {product.soldCount > 0 && ` | ${product.soldCount >= 1000 ? `${(product.soldCount / 1000).toFixed(1)}k` : product.soldCount} sold`})
+                          </span>
+                        )}
+                        {product.reviewCount === 0 && product.soldCount > 0 && (
+                          <span>{product.soldCount >= 1000 ? `${(product.soldCount / 1000).toFixed(1)}k` : product.soldCount} sold</span>
+                        )}
                       </div>
                     )}
                     <div className="product-price">
-                      ${product.price.toFixed(2)}
+                      RM{product.price.toFixed(2)}
                       {product.compareAtPrice && (
                         <span className="product-price-old">
-                          ${product.compareAtPrice.toFixed(2)}
+                          RM{product.compareAtPrice.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -299,10 +307,13 @@ export default function Products() {
                 </Link>
                 <button
                   className="btn btn-primary add-to-cart-btn"
-                  onClick={() => handleAddToCart(product)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAddToCart(product);
+                  }}
                   disabled={product.stock === 0}
                 >
-                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  {product.stock === 0 ? 'Out of Stock' : 'See options'}
                 </button>
               </div>
             ))}

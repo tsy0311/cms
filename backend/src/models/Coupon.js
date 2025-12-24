@@ -72,3 +72,5 @@ couponSchema.methods.isValid = function() {
 
 module.exports = mongoose.model('Coupon', couponSchema);
 
+
+

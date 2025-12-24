@@ -15,13 +15,20 @@ export const ToastProvider = ({ children }) => {
 
   const showToast = useCallback((message, type = 'info', duration = 3000) => {
     const id = Date.now();
-    const toast = { id, message, type };
+    // Check if it's a cart success message
+    const isCartSuccess = type === 'success' && (
+      message.toLowerCase().includes('added to cart') ||
+      message.toLowerCase().includes('cart')
+    );
+    // Extend duration for cart success messages to show animation better
+    const finalDuration = isCartSuccess ? 4000 : duration;
+    const toast = { id, message, type, isCartSuccess };
     
     setToasts((prev) => [...prev, toast]);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, duration);
+    }, finalDuration);
   }, []);
 
   const removeToast = useCallback((id) => {
@@ -35,14 +42,21 @@ export const ToastProvider = ({ children }) => {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`toast toast-${toast.type}`}
+            className={`toast toast-${toast.type} ${toast.isCartSuccess ? 'toast-success-cart' : ''}`}
             onClick={() => removeToast(toast.id)}
           >
-            {toast.message}
+            {toast.type === 'success' && (
+              <span className="toast-icon">
+                {toast.isCartSuccess ? '🛒' : '✓'}
+              </span>
+            )}
+            <span className="toast-message">{toast.message}</span>
           </div>
         ))}
       </div>
     </ToastContext.Provider>
   );
 };
+
+
 
