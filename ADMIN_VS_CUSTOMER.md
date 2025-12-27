@@ -196,3 +196,5 @@ Public-facing store where customers browse and purchase products.
 
 Both applications connect to the same backend API (`/backend`) but serve different purposes!
 
+
+

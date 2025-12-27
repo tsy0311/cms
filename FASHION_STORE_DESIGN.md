@@ -110,3 +110,5 @@ The design follows 6IXTY8IGHT's approach:
 
 Your website now matches the aesthetic and functionality of a modern fashion e-commerce store!
 
+
+
