@@ -7,7 +7,7 @@ export default function Cart() {
   const navigate = useNavigate();
 
   const tax = getCartTotal() * 0.08;
-  const shipping = getCartTotal() >= 50 ? 0 : 5.99;
+  const shipping = getCartTotal() >= 200 ? 0 : 10.00; // RM200 for free shipping, RM10 shipping cost
   const total = getCartTotal() + tax + shipping;
 
   if (cart.length === 0) {
@@ -15,8 +15,9 @@ export default function Cart() {
       <div style={{ 
         textAlign: 'center', 
         padding: '4rem 2rem',
-        background: 'linear-gradient(135deg, #FF6B9D 0%, #FFB6C1 100%)',
-        borderRadius: '8px'
+        background: 'linear-gradient(135deg, #000 0%, #333 100%)',
+        borderRadius: '8px',
+        color: 'white'
       }}>
         <h2 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: '700' }}>
           Your cart is empty
@@ -51,16 +52,19 @@ export default function Cart() {
       }}>
         Shopping Cart
       </h1>
-      <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
-        <div style={{ flex: 2 }}>
+      <div className="cart-layout">
+        <div className="cart-items-container">
           {cart.map((item, index) => {
             const itemKey = `${item.product._id}-${item.selectedSize || ''}-${item.selectedColor || ''}`;
             return (
             <div key={itemKey || `${item.product._id}-${index}`} className="cart-item">
               <img
-                src={item.product.images[0]?.url || '/placeholder.jpg'}
+                src={item.product.images[0]?.url || 'https://placehold.co/200x200/000000/FFFFFF?text=Product'}
                 alt={item.product.name}
                 className="cart-item-image"
+                onError={(e) => {
+                  e.target.src = 'https://placehold.co/200x200/000000/FFFFFF?text=Product';
+                }}
               />
               <div className="cart-item-details" style={{ flex: 1 }}>
                 <h3>{item.product.name}</h3>
@@ -75,7 +79,7 @@ export default function Cart() {
                   </p>
                 )}
                 <p style={{ fontWeight: '600', marginTop: '0.5rem' }}>
-                  ${item.product.price.toFixed(2)}
+                  RM{item.product.price.toFixed(2)}
                 </p>
               </div>
               <div className="cart-item-actions">
@@ -124,7 +128,7 @@ export default function Cart() {
                   </button>
                 </div>
                 <p style={{ minWidth: '80px', textAlign: 'right', fontWeight: '600' }}>
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  RM{(item.product.price * item.quantity).toFixed(2)}
                 </p>
                 <button
                   className="btn btn-outline"
@@ -144,24 +148,24 @@ export default function Cart() {
             );
           })}
         </div>
-        <div style={{ flex: 1 }}>
+        <div className="cart-summary-container">
           <div className="cart-summary">
             <h2>Order Summary</h2>
             <div className="cart-summary-row">
               <span>Subtotal:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
+              <span>RM{getCartTotal().toFixed(2)}</span>
             </div>
             <div className="cart-summary-row">
               <span>Tax:</span>
-              <span>${tax.toFixed(2)}</span>
+              <span>RM{tax.toFixed(2)}</span>
             </div>
             <div className="cart-summary-row">
               <span>Shipping:</span>
-              <span>${shipping.toFixed(2)}</span>
+              <span>RM{shipping.toFixed(2)}</span>
             </div>
             <div className="cart-summary-row cart-summary-total">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>RM{total.toFixed(2)}</span>
             </div>
             <button
               className="btn btn-primary"

@@ -1,0 +1,24 @@
+{
+  "name": "cms-ecommerce",
+  "version": "1.0.0",
+  "description": "Full-stack E-Commerce CMS Template",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:admin\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && cross-env PORT=3000 npm start",
+    "dev:admin": "cd admin && cross-env PORT=3001 npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../admin && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0"
+  },
+  "keywords": [
+    "cms",
+    "ecommerce",
+    "template"
+  ],
+  "author": "",
+  "license": "MIT"
+}

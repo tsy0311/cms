@@ -38,6 +38,9 @@ export default function ProductForm() {
     sizes: [],
     colors: [],
     images: [],
+    reviewCount: 0,
+    soldCount: 0,
+    averageRating: 0,
   });
   const [sizeInput, setSizeInput] = useState('');
   const [colorInput, setColorInput] = useState({ name: '', hex: '#000000' });
@@ -78,6 +81,9 @@ export default function ProductForm() {
         sizes: product.sizes || [],
         colors: product.colors || [],
         images: product.images || [],
+        reviewCount: product.reviewCount || 0,
+        soldCount: product.soldCount || 0,
+        averageRating: product.averageRating || 0,
       });
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -336,6 +342,42 @@ export default function ProductForm() {
                 onChange={handleChange}
                 required
                 inputProps={{ min: '0' }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                label="Review Count"
+                name="reviewCount"
+                type="number"
+                value={formData.reviewCount}
+                onChange={handleChange}
+                inputProps={{ min: '0', step: '1' }}
+                helperText="Number of reviews"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                label="Sold Count"
+                name="soldCount"
+                type="number"
+                value={formData.soldCount}
+                onChange={handleChange}
+                inputProps={{ min: '0', step: '1' }}
+                helperText="Number of items sold"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                label="Average Rating"
+                name="averageRating"
+                type="number"
+                value={formData.averageRating}
+                onChange={handleChange}
+                inputProps={{ min: '0', max: '5', step: '0.1' }}
+                helperText="Rating from 0 to 5"
               />
             </Grid>
             <Grid item xs={12}>

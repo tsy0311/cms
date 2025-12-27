@@ -9,7 +9,6 @@ A full-featured e-commerce website template. This template can be easily customi
 - **User Authentication**: Secure admin and customer authentication
 - **Admin Dashboard**: Intuitive content management interface
 - **E-Commerce Frontend**: Modern, responsive storefront
-- **Template Configuration**: Easy customization through config files
 - **RESTful API**: Well-structured backend API
 
 ## Project Structure
@@ -18,7 +17,6 @@ A full-featured e-commerce website template. This template can be easily customi
 ├── backend/          # Node.js/Express API server
 ├── frontend/         # React e-commerce storefront
 ├── admin/            # React admin dashboard
-├── config/           # Template configuration files
 └── README.md
 ```
 
@@ -33,7 +31,7 @@ A full-featured e-commerce website template. This template can be easily customi
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (local or cloud instance) - See [MONGODB_SETUP.md](./MONGODB_SETUP.md) for setup instructions
+- MongoDB (local or cloud instance)
 - npm or yarn
 
 ### Installation
@@ -66,15 +64,6 @@ cd admin
 npm install
 npm start
 ```
-
-### Configuration
-
-Edit `config/template.config.js` to customize:
-- Site name and branding
-- Color scheme
-- Payment gateways
-- Email settings
-- Feature toggles
 
 ## Default Admin Credentials
 
@@ -139,24 +128,22 @@ npm start
 
 ## Customization Guide
 
-1. **Branding**: Update `config/template.config.js`
-2. **Styling**: Modify theme files in frontend and admin
-3. **Features**: Enable/disable features in config
-4. **Database**: Modify models in `backend/src/models/`
+1. **Branding**: Modify components in frontend and admin
+2. **Styling**: Update CSS files in frontend and admin
+3. **Database**: Modify models in `backend/src/models/`
 
 ## Template Customization
 
 ### For New Websites
 
 1. **Copy the entire project** to a new directory
-2. **Update `config/template.config.js`** with your site's information
-3. **Modify branding:**
-   - Update site name, logo, and colors
-   - Edit frontend components for custom styling
-4. **Configure features:**
-   - Enable/disable features in config
+2. **Modify branding:**
+   - Update site name, logo, and colors in frontend components
+   - Edit CSS files for custom styling
+3. **Configure features:**
+   - Customize components as needed
    - Add custom payment gateways
-5. **Customize database:**
+4. **Customize database:**
    - Add new models if needed
    - Extend existing models with custom fields
 
@@ -179,7 +166,6 @@ Each deployment should have its own `.env` file:
 ✅ Admin Dashboard
 ✅ Responsive Design
 ✅ RESTful API
-✅ Template Configuration System
 
 ## Extending the Template
 
@@ -195,7 +181,6 @@ Each deployment should have its own `.env` file:
 1. Backend: Add routes, controllers, and models
 2. Frontend: Add pages and components
 3. Admin: Add management pages
-4. Update config if needed
 
 ## License
 

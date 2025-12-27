@@ -53,8 +53,7 @@ const productSchema = new mongoose.Schema({
     default: true
   },
   sizes: [{
-    type: String,
-    enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+    type: String
   }],
   colors: [{
     name: String,
@@ -87,6 +86,21 @@ const productSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  averageRating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  reviewCount: {
+    type: Number,
+    default: 0
+  },
+  soldCount: {
+    type: Number,
+    default: 0,
+    min: 0
   }
 }, {
   timestamps: true
