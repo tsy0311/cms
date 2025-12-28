@@ -7,10 +7,9 @@
 .main-content {
   flex: 1;
   padding: 20px;
-  max-width: 1400px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  box-sizing: border-box;
 }
 
 /* Header Styles - Fashion Brand */
@@ -22,8 +21,6 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .header-content {
@@ -32,68 +29,6 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex: 1;
-  min-width: 200px;
-}
-
-.header-nav {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.header-search {
-  flex: 1;
-  max-width: 400px;
-  min-width: 150px;
-  margin: 0 1rem;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  box-sizing: border-box;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.header-link {
-  color: white;
-  text-decoration: none;
-  transition: opacity 0.2s;
-  position: relative;
-  white-space: nowrap;
-}
-
-.header-link:hover {
-  opacity: 0.8;
-}
-
-.cart-link {
-  position: relative;
-}
-
-.logout-link {
-  cursor: pointer;
-}
-
-.user-name-mobile {
-  display: none;
 }
 
 .logo {
@@ -145,12 +80,12 @@ footer {
   margin-top: auto;
 }
 
-/* Hero Section - Adam Malaysia Style */
+/* Hero Section - Fashion Brand Style */
 .hero {
   text-align: center;
   padding: 5rem 2rem;
-  background: linear-gradient(135deg, #000 0%, #333 100%);
-  color: white;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FFB6C1 50%, #FFE4E1 100%);
+  color: #000000;
   border-radius: 0;
   margin-bottom: 3rem;
   position: relative;
@@ -163,7 +98,7 @@ footer {
   font-weight: 800;
   letter-spacing: -1px;
   text-transform: uppercase;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .hero p {
@@ -174,7 +109,6 @@ footer {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  opacity: 0.9;
 }
 
 .hero .btn {
@@ -223,19 +157,14 @@ select option {
 
 .add-to-cart-btn {
   width: 100%;
-  margin-top: 0.75rem;
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 0;
-  text-transform: none;
-  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
 }
 
-/* Product Grid - Matching Adam Malaysia Layout */
+/* Product Grid */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
   margin-top: 2rem;
 }
 
@@ -247,57 +176,41 @@ select option {
   cursor: pointer;
   background: white;
   position: relative;
-  display: flex;
-  flex-direction: column;
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  border-color: #000;
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-color: #FF6B9D;
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.02);
+  transform: scale(1.05);
 }
 
 .product-image {
   width: 100%;
-  height: 280px;
+  height: 300px;
   object-fit: cover;
-  background-color: #f5f5f5;
+  background-color: #f8f8f8;
   transition: transform 0.3s ease;
-  display: block;
 }
 
 .product-info {
   padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 .product-name {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  line-height: 1.4;
-  color: #000;
-  min-height: 2.8em;
-}
-
-.product-meta {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
 }
 
 .product-price {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #000;
-  margin-top: auto;
+  margin-top: 0.5rem;
 }
 
 .product-price-old {
@@ -381,47 +294,27 @@ select option {
 }
 
 /* Cart Styles */
-.cart-layout {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.cart-items-container {
-  flex: 2;
-  min-width: 0;
-}
-
-.cart-summary-container {
-  flex: 1;
-  min-width: 280px;
-}
-
 .cart-item {
   display: flex;
   border-bottom: 1px solid #ddd;
   padding: 1rem 0;
-  gap: 1rem;
 }
 
 .cart-item-image {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  flex-shrink: 0;
+  margin-right: 1rem;
 }
 
 .cart-item-details {
   flex: 1;
-  min-width: 0;
 }
 
 .cart-item-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .quantity-control {
@@ -462,24 +355,6 @@ select option {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 2px solid #ddd;
-}
-
-/* Product Detail Layout */
-.product-detail-layout {
-  display: flex;
-  gap: 3rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.product-detail-image {
-  flex: 1 1 400px;
-  min-width: 0;
-}
-
-.product-detail-info {
-  flex: 1 1 400px;
-  min-width: 0;
 }
 
 /* Custom Page Layouts */
@@ -535,93 +410,20 @@ select option {
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .main-content {
-    padding: 15px;
-  }
-
-  .header-content {
-    gap: 0.75rem;
-  }
-
-  .header-left {
-    gap: 1rem;
-  }
-
-  .header-nav {
-    gap: 1rem;
-  }
-
-  .header-search {
-    max-width: 300px;
-    margin: 0 0.5rem;
-  }
-}
-
 @media (max-width: 768px) {
-  header {
-    padding: 1rem;
-  }
-
   .header-content {
     flex-direction: column;
-    align-items: stretch;
     gap: 1rem;
   }
 
-  .header-left {
-    flex-direction: column;
-    align-items: flex-start;
+  nav {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
-    width: 100%;
   }
 
-  .header-nav {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 1.5rem;
-  }
-
-  .header-search {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    order: 3;
-  }
-
-  .header-right {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0.75rem;
-    order: 2;
-  }
-
-  .header-link {
-    font-size: 0.9rem;
-  }
-
-  .user-name-mobile {
-    display: inline;
-  }
-
-  .logo {
-    font-size: 1.5rem !important;
-  }
-
-  .main-content {
-    padding: 15px;
-  }
-
-  .hero {
-    padding: 3rem 1.5rem !important;
-  }
-
-  .hero h1 {
-    font-size: 2.5rem !important;
-  }
-
-  .hero p {
-    font-size: 1.1rem !important;
+  nav a {
+    margin-left: 0;
   }
 
   .products-grid {
@@ -629,225 +431,14 @@ select option {
     gap: 1rem;
   }
 
-  .product-card {
-    min-width: 0;
-  }
-
-  .product-image {
-    height: 250px;
-  }
-
   .two-column-grid,
   .three-column-grid {
     grid-template-columns: 1fr;
-    padding: 1rem;
   }
 
   .layout-sidebar-left,
   .layout-sidebar-right {
     grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-
-  .cart-layout {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .cart-items-container {
-    width: 100%;
-  }
-
-  .cart-summary-container {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .cart-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .cart-item-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
-
-  .cart-item-actions {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .cart-summary {
-    margin-top: 1rem;
-  }
-
-  .product-detail-layout {
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .product-detail-image,
-  .product-detail-info {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  header {
-    padding: 0.75rem;
-  }
-
-  .header-content {
-    gap: 0.75rem;
-  }
-
-  .header-nav {
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .header-link {
-    font-size: 0.85rem;
-    padding: 0.25rem 0;
-  }
-
-  .logo {
-    font-size: 1.3rem !important;
-    letter-spacing: 1px !important;
-  }
-
-  .main-content {
-    padding: 10px;
-  }
-
-  .hero {
-    padding: 2rem 1rem !important;
-  }
-
-  .hero h1 {
-    font-size: 2rem !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .hero p {
-    font-size: 1rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .product-image {
-    height: 200px;
-  }
-
-  .product-name {
-    font-size: 1rem;
-  }
-
-  .product-price {
-    font-size: 1.1rem;
-  }
-
-  .btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
-  }
-
-  .cart-item-image {
-    height: 150px;
-  }
-
-  .cart-item-details h3 {
-    font-size: 1rem;
-  }
-
-  .product-detail-layout {
-    gap: 1.5rem;
-  }
-
-  .product-detail-info h1 {
-    font-size: 1.8rem !important;
-  }
-
-  .product-detail-info > div[style*="fontSize: '2rem'"] {
-    font-size: 1.5rem !important;
-  }
-
-  .promo-banner {
-    padding: 1rem !important;
-    font-size: 0.9rem !important;
-    margin-bottom: 2rem !important;
-  }
-
-  h1 {
-    font-size: 1.8rem !important;
-  }
-
-  h2 {
-    font-size: 1.5rem !important;
-  }
-}
-
-/* Products page filters mobile */
-@media (max-width: 768px) {
-  /* Filter sidebar adjustments */
-  .products-filters {
-    width: 100% !important;
-    margin-bottom: 1.5rem;
-  }
-
-  /* Pagination mobile */
-  .pagination {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .pagination button {
-    flex: 1;
-    min-width: 100px;
-  }
-}
-
-/* Additional mobile-friendly utilities */
-@media (max-width: 768px) {
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
-
-  /* Improve touch targets */
-  .btn,
-  button,
-  a {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Better spacing for mobile */
-  section {
-    margin-bottom: 2rem;
-  }
-
-  /* Ensure text doesn't overflow */
-  * {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-
-  /* Better table/list scrolling on mobile */
-  table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 }
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
-import { useToast } from '../components/Toast';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -12,7 +11,6 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const { addToCart } = useCart();
-  const { showToast } = useToast();
 
   useEffect(() => {
     fetchProduct();
@@ -30,15 +28,11 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      showToast('Please select a size', 'warning');
+      alert('Please select a size');
       return;
     }
     addToCart(product, quantity, selectedSize, selectedColor);
-    showToast(`${product.name} added to cart!`, 'success');
-    // Navigate to cart after showing the toast animation
-    setTimeout(() => {
-      navigate('/cart');
-    }, 1500);
+    navigate('/cart');
   };
 
   if (!product) {
@@ -46,22 +40,19 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="product-detail-layout">
-      <div className="product-detail-image">
+    <div style={{ display: 'flex', gap: '3rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+      <div style={{ flex: '1 1 400px' }}>
         <img
-          src={product.images[0]?.url || 'https://placehold.co/500x500/000000/FFFFFF?text=Product'}
+          src={product.images[0]?.url || '/placeholder.jpg'}
           alt={product.name}
           style={{ 
             width: '100%', 
             borderRadius: '0',
             border: '1px solid #e0e0e0'
           }}
-          onError={(e) => {
-            e.target.src = 'https://placehold.co/500x500/000000/FFFFFF?text=Product';
-          }}
         />
       </div>
-      <div className="product-detail-info">
+      <div style={{ flex: '1 1 400px' }}>
         <h1 style={{ 
           fontSize: '2.5rem', 
           fontWeight: '800',
@@ -73,7 +64,7 @@ export default function ProductDetail() {
         </h1>
         <div style={{ fontSize: '2rem', margin: '1.5rem 0', fontWeight: '700' }}>
           <span style={{ color: '#000' }}>
-            RM{product.price.toFixed(2)}
+            ${product.price.toFixed(2)}
           </span>
           {product.compareAtPrice && (
             <span
@@ -85,7 +76,7 @@ export default function ProductDetail() {
                 fontWeight: '400'
               }}
             >
-              RM{product.compareAtPrice.toFixed(2)}
+              ${product.compareAtPrice.toFixed(2)}
             </span>
           )}
         </div>

@@ -75,8 +75,6 @@ export default function Products() {
               <TableCell>Category</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Stock</TableCell>
-              <TableCell>Reviews</TableCell>
-              <TableCell>Sold</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -88,14 +86,8 @@ export default function Products() {
                 <TableCell>
                   {product.category?.name || 'N/A'}
                 </TableCell>
-                <TableCell>RM{product.price?.toFixed(2)}</TableCell>
+                <TableCell>${product.price?.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
-                <TableCell>
-                  {product.reviewCount > 0 ? `${product.reviewCount} reviews` : '-'}
-                </TableCell>
-                <TableCell>
-                  {product.soldCount > 0 ? product.soldCount : '-'}
-                </TableCell>
                 <TableCell>
                   <Chip
                     label={product.status}

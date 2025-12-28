@@ -5,15 +5,11 @@ const Category = require('../models/Category');
 // @access  Public
 exports.getCategories = async (req, res) => {
   try {
-    const { isActive } = req.query;
+    const { isActive = true } = req.query;
     
     const query = {};
-    // If isActive is provided in query, use it (convert string to boolean)
-    // Otherwise, default to true (only show active categories)
     if (isActive !== undefined) {
-      query.isActive = isActive === 'true' || isActive === true;
-    } else {
-      query.isActive = true;
+      query.isActive = isActive === 'true';
     }
 
     const categories = await Category.find(query)
