@@ -11,31 +11,34 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <div className="App">
-            <Header />
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <div className="App">
+              <Header />
+              <main className="main-content">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </Router>
+        </CartProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 

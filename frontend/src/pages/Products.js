@@ -2,18 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/api';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
   const { addToCart } = useCart();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 when category changes
     fetchProducts();
-  }, [selectedCategory]);
+  }, [selectedCategory, currentPage]);
 
   const fetchCategories = async () => {
     try {
@@ -27,14 +37,24 @@ export default function Products() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const params = { status: 'active', limit: 50 };
+      const params = { 
+        status: 'active', 
+        limit: 24,  // Products per page
+        page: currentPage 
+      };
       if (selectedCategory) {
         params.category = selectedCategory;
       }
       const response = await axios.get('/api/products', { params });
-      setProducts(response.data.data);
+      setProducts(response.data.data || []);
+      setTotalPages(response.data.pages || 1);
+      setTotalProducts(response.data.total || 0);
+      console.log(`Loaded ${response.data.data?.length || 0} products for category: ${selectedCategory || 'All'} (Page ${currentPage}/${response.data.pages || 1})`);
     } catch (error) {
       console.error('Error fetching products:', error);
+      setProducts([]);
+      setTotalPages(1);
+      setTotalProducts(0);
     } finally {
       setLoading(false);
     }
@@ -57,10 +77,10 @@ export default function Products() {
           textTransform: 'uppercase',
           letterSpacing: '2px'
         }}>
-          Shop All
+          {t('products')}
         </h1>
         <p style={{ fontSize: '1.2rem', color: '#333' }}>
-          Explore our complete collection
+          {language === 'en' ? 'Explore our complete collection' : '探索我们的完整产品系列'}
         </p>
       </div>
       
@@ -72,7 +92,7 @@ export default function Products() {
         flexWrap: 'wrap'
       }}>
         <label htmlFor="category" style={{ fontWeight: '600', fontSize: '1.1rem' }}>
-          Category:
+          {language === 'en' ? 'Category' : '类别'}:
         </label>
         <select
           id="category"
@@ -110,41 +130,147 @@ export default function Products() {
       </div>
 
       {loading ? (
-        <p>Loading products...</p>
+        <p>{t('loading')}</p>
+      ) : products.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem' }}>
+          <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '1rem' }}>
+            {language === 'en' ? 'No products found in this category' : '此类别中没有产品'}
+          </p>
+        </div>
       ) : (
-        <div className="products-grid">
-          {products.map((product) => (
-            <div key={product._id} className="product-card">
-              <Link to={`/products/${product._id}`}>
-                <img
-                  src={product.images[0]?.url || '/placeholder.jpg'}
-                  alt={product.name}
-                  className="product-image"
-                />
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    ${product.price.toFixed(2)}
-                    {product.compareAtPrice && (
-                      <span className="product-price-old">
-                        ${product.compareAtPrice.toFixed(2)}
-                      </span>
-                    )}
+        <>
+          <div style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#666' }}>
+            {language === 'en' 
+              ? `Showing ${(currentPage - 1) * 24 + 1}-${Math.min(currentPage * 24, totalProducts)} of ${totalProducts} products`
+              : `显示第 ${(currentPage - 1) * 24 + 1}-${Math.min(currentPage * 24, totalProducts)} 个，共 ${totalProducts} 个产品`}
+          </div>
+          <div className="products-grid">
+            {products.map((product) => (
+              <div key={product._id} className="product-card">
+                <Link to={`/products/${product._id}`}>
+                  <img
+                    src={getImageUrl(product.images[0]?.url) || '/placeholder.jpg'}
+                    alt={product.name}
+                    className="product-image"
+                  />
+                  <div className="product-info">
+                    <h3 className="product-name">{product.name}</h3>
+                    <div className="product-price">
+                      MYR {Math.round(product.price)}
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+                <button
+                  className="btn btn-primary add-to-cart-btn"
+                  onClick={() => {
+                    addToCart(product, 1);
+                    alert(t('addToCartSuccess'));
+                  }}
+                >
+                  {t('addToCart')}
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              marginTop: '3rem',
+              marginBottom: '2rem'
+            }}>
               <button
-                className="btn btn-primary add-to-cart-btn"
-                onClick={() => {
-                  addToCart(product, 1);
-                  alert(`${product.name} added to cart!`);
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: '2px solid #000',
+                  background: currentPage === 1 ? '#ddd' : '#000',
+                  color: currentPage === 1 ? '#999' : '#fff',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  fontWeight: '600',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                Add to Cart
+                {language === 'en' ? 'Previous' : '上一页'}
+              </button>
+              
+              <div style={{ 
+                display: 'flex', 
+                gap: '0.5rem',
+                alignItems: 'center'
+              }}>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        border: '2px solid #000',
+                        background: currentPage === pageNum ? '#FF6B9D' : '#fff',
+                        color: currentPage === pageNum ? '#fff' : '#000',
+                        cursor: 'pointer',
+                        fontWeight: '600',
+                        fontSize: '1rem',
+                        borderRadius: '4px',
+                        minWidth: '2.5rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentPage !== pageNum) {
+                          e.target.style.background = '#f0f0f0';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentPage !== pageNum) {
+                          e.target.style.background = '#fff';
+                        }
+                      }}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  border: '2px solid #000',
+                  background: currentPage === totalPages ? '#ddd' : '#000',
+                  color: currentPage === totalPages ? '#999' : '#fff',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  fontWeight: '600',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {language === 'en' ? 'Next' : '下一页'}
               </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

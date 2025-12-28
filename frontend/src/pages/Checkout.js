@@ -20,9 +20,10 @@ export default function Checkout() {
   });
   const [loading, setLoading] = useState(false);
 
-  const tax = getCartTotal() * 0.08;
-  const shipping = getCartTotal() >= 50 ? 0 : 5.99;
-  const total = getCartTotal() + tax + shipping;
+  const cartTotal = Math.round(getCartTotal());
+  const tax = Math.round(cartTotal * 0.08);
+  const shipping = cartTotal >= 150 ? 0 : 10; // MYR 150 for free shipping
+  const total = cartTotal + tax + shipping;
 
   const handleChange = (e) => {
     setFormData({
@@ -172,19 +173,19 @@ export default function Checkout() {
             <h2>Order Summary</h2>
             <div className="cart-summary-row">
               <span>Subtotal:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
+              <span>MYR {cartTotal}</span>
             </div>
             <div className="cart-summary-row">
               <span>Tax:</span>
-              <span>${tax.toFixed(2)}</span>
+              <span>MYR {tax}</span>
             </div>
             <div className="cart-summary-row">
               <span>Shipping:</span>
-              <span>${shipping.toFixed(2)}</span>
+              <span>MYR {shipping}</span>
             </div>
             <div className="cart-summary-row cart-summary-total">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>MYR {total}</span>
             </div>
             <button
               type="submit"

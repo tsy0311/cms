@@ -6,16 +6,17 @@ require('dotenv').config();
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
-// CNY to MYR exchange rate (approximate, update as needed)
-// As of 2025, 1 CNY ≈ 0.66 MYR
-const CNY_TO_MYR_RATE = 0.66;
+// CNY to MYR exchange rate (current rate)
+// 1 CNY = 0.58 MYR
+const CNY_TO_MYR_RATE = 0.58;
 
 /**
- * Convert CNY to MYR
+ * Convert CNY to MYR and round to nearest integer (no decimal places)
  */
 function convertCNYToMYR(cnyAmount) {
   if (!cnyAmount || isNaN(cnyAmount)) return 0;
-  return parseFloat((parseFloat(cnyAmount) * CNY_TO_MYR_RATE).toFixed(2));
+  const myrAmount = parseFloat(cnyAmount) * CNY_TO_MYR_RATE;
+  return Math.round(myrAmount); // Round to nearest integer
 }
 
 /**

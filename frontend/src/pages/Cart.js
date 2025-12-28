@@ -1,14 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/api';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
 
-  const tax = getCartTotal() * 0.08;
-  const shipping = getCartTotal() >= 50 ? 0 : 5.99;
-  const total = getCartTotal() + tax + shipping;
+  const cartTotal = Math.round(getCartTotal());
+  const tax = Math.round(cartTotal * 0.08);
+  const shipping = cartTotal >= 150 ? 0 : 10; // MYR 150 for free shipping
+  const total = cartTotal + tax + shipping;
 
   if (cart.length === 0) {
     return (
@@ -19,10 +23,10 @@ export default function Cart() {
         borderRadius: '8px'
       }}>
         <h2 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: '700' }}>
-          Your cart is empty
+          {t('emptyCart')}
         </h2>
         <p style={{ marginBottom: '2rem', fontSize: '1.1rem' }}>
-          Start adding items to your cart!
+          {language === 'en' ? 'Start adding items to your cart!' : '开始将商品添加到购物车！'}
         </p>
         <button 
           className="btn btn-primary" 
@@ -34,7 +38,7 @@ export default function Cart() {
             letterSpacing: '1px'
           }}
         >
-          Continue Shopping
+          {t('continue')} {language === 'en' ? 'Shopping' : '购物'}
         </button>
       </div>
     );
@@ -49,7 +53,7 @@ export default function Cart() {
         letterSpacing: '2px',
         marginBottom: '2rem'
       }}>
-        Shopping Cart
+        {language === 'en' ? 'Shopping Cart' : '购物车'}
       </h1>
       <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
         <div style={{ flex: 2 }}>
@@ -58,7 +62,7 @@ export default function Cart() {
             return (
             <div key={itemKey || `${item.product._id}-${index}`} className="cart-item">
               <img
-                src={item.product.images[0]?.url || '/placeholder.jpg'}
+                src={getImageUrl(item.product.images[0]?.url) || '/placeholder.jpg'}
                 alt={item.product.name}
                 className="cart-item-image"
               />
@@ -66,16 +70,16 @@ export default function Cart() {
                 <h3>{item.product.name}</h3>
                 {item.selectedSize && (
                   <p style={{ fontSize: '0.9rem', color: '#666', margin: '0.25rem 0' }}>
-                    Size: {item.selectedSize}
+                    {language === 'en' ? 'Size' : '尺寸'}: {item.selectedSize}
                   </p>
                 )}
                 {item.selectedColor && (
                   <p style={{ fontSize: '0.9rem', color: '#666', margin: '0.25rem 0' }}>
-                    Color: {item.selectedColor}
+                    {language === 'en' ? 'Color' : '颜色'}: {item.selectedColor}
                   </p>
                 )}
                 <p style={{ fontWeight: '600', marginTop: '0.5rem' }}>
-                  ${item.product.price.toFixed(2)}
+                  MYR {Math.round(item.product.price)}
                 </p>
               </div>
               <div className="cart-item-actions">
@@ -124,7 +128,7 @@ export default function Cart() {
                   </button>
                 </div>
                 <p style={{ minWidth: '80px', textAlign: 'right', fontWeight: '600' }}>
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  MYR {Math.round(item.product.price * item.quantity)}
                 </p>
                 <button
                   className="btn btn-outline"
@@ -146,29 +150,37 @@ export default function Cart() {
         </div>
         <div style={{ flex: 1 }}>
           <div className="cart-summary">
-            <h2>Order Summary</h2>
-            <div className="cart-summary-row">
-              <span>Subtotal:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
+            <h3>{language === 'en' ? 'Order Summary' : '订单摘要'}</h3>
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span>{t('subtotal')}:</span>
+                <span>MYR {getCartTotal().toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span>{language === 'en' ? 'Tax' : '税费'}:</span>
+                <span>MYR {tax.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span>{language === 'en' ? 'Shipping' : '运费'}:</span>
+                <span>MYR {shipping.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid #000', fontWeight: '700', fontSize: '1.2rem' }}>
+                <span>{t('total')}:</span>
+                <span>MYR {total.toFixed(2)}</span>
+              </div>
             </div>
-            <div className="cart-summary-row">
-              <span>Tax:</span>
-              <span>${tax.toFixed(2)}</span>
-            </div>
-            <div className="cart-summary-row">
-              <span>Shipping:</span>
-              <span>${shipping.toFixed(2)}</span>
-            </div>
-            <div className="cart-summary-row cart-summary-total">
-              <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
-            <button
-              className="btn btn-primary"
-              style={{ width: '100%', marginTop: '1rem' }}
+            <button 
+              className="btn btn-primary" 
               onClick={() => navigate('/checkout')}
+              style={{
+                width: '100%',
+                padding: '1.25rem',
+                fontSize: '1.1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '2px'
+              }}
             >
-              Proceed to Checkout
+              {language === 'en' ? 'Proceed to Checkout' : '前往结账'}
             </button>
           </div>
         </div>

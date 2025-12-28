@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/api';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -11,6 +13,7 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const { addToCart } = useCart();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchProduct();
@@ -28,7 +31,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      alert('Please select a size');
+      alert(t('selectSize'));
       return;
     }
     addToCart(product, quantity, selectedSize, selectedColor);
@@ -36,14 +39,14 @@ export default function ProductDetail() {
   };
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
     <div style={{ display: 'flex', gap: '3rem', marginTop: '2rem', flexWrap: 'wrap' }}>
       <div style={{ flex: '1 1 400px' }}>
         <img
-          src={product.images[0]?.url || '/placeholder.jpg'}
+          src={getImageUrl(product.images[0]?.url) || '/placeholder.jpg'}
           alt={product.name}
           style={{ 
             width: '100%', 
@@ -64,21 +67,8 @@ export default function ProductDetail() {
         </h1>
         <div style={{ fontSize: '2rem', margin: '1.5rem 0', fontWeight: '700' }}>
           <span style={{ color: '#000' }}>
-            ${product.price.toFixed(2)}
+            MYR {Math.round(product.price)}
           </span>
-          {product.compareAtPrice && (
-            <span
-              style={{
-                textDecoration: 'line-through',
-                color: '#999',
-                marginLeft: '1rem',
-                fontSize: '1.5rem',
-                fontWeight: '400'
-              }}
-            >
-              ${product.compareAtPrice.toFixed(2)}
-            </span>
-          )}
         </div>
         <p style={{ 
           marginBottom: '2rem', 
@@ -100,7 +90,7 @@ export default function ProductDetail() {
                   fontWeight: '600',
                   fontSize: '1rem'
                 }}>
-                  Size: <span style={{ color: 'red' }}>*</span>
+                  {t('selectSize')}: <span style={{ color: 'red' }}>*</span>
                 </label>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   {product.sizes.map((size) => (
@@ -135,7 +125,7 @@ export default function ProductDetail() {
                   fontWeight: '600',
                   fontSize: '1rem'
                 }}>
-                  Color:
+                  {t('selectColor')}:
                 </label>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   {product.colors.map((color, index) => (
@@ -164,7 +154,7 @@ export default function ProductDetail() {
                 marginBottom: '0.5rem',
                 fontWeight: '600'
               }}>
-                Quantity:
+                {t('quantity')}:
               </label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <button
@@ -207,7 +197,7 @@ export default function ProductDetail() {
                   +
                 </button>
                 <span style={{ marginLeft: '1rem', color: '#666' }}>
-                  {product.stock} in stock
+                  {product.stock} {t('inStock')}
                 </span>
               </div>
             </div>
@@ -223,17 +213,17 @@ export default function ProductDetail() {
               }}
               disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
             >
-              Add to Cart
+              {t('addToCart')}
             </button>
             {product.sizes && product.sizes.length > 0 && !selectedSize && (
               <p style={{ color: 'red', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                Please select a size
+                {t('selectSize')}
               </p>
             )}
           </>
         ) : (
           <p style={{ color: 'red', fontSize: '1.1rem', fontWeight: '600' }}>
-            Out of Stock
+            {t('outOfStock')}
           </p>
         )}
       </div>
