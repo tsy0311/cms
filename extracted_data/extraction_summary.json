@@ -1,0 +1,8 @@
+{
+  "totalProducts": 1462,
+  "totalImages": 1462,
+  "productsWithImages": 1462,
+  "imagesMappedByPosition": 0,
+  "extractionDate": "2025-12-28T08:32:48.464Z",
+  "note": "Images matched using ExcelJS row positions with index fallback"
+}
