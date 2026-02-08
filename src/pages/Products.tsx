@@ -3,12 +3,10 @@ import { Search, SlidersHorizontal, X, RotateCcw } from 'lucide-react';
 import { 
   Product, 
   Category, 
-  AgeRange, 
   CATEGORIES, 
-  AGE_RANGES,
   cn
 } from '@/lib/index';
-import { sampleProducts } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import { ProductCard } from '@/components/ProductCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,30 +20,28 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Products: React.FC = () => {
+  const { products } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
-  const [selectedAgeRange, setSelectedAgeRange] = useState<AgeRange | 'All'>('All');
 
   const filteredProducts = useMemo(() => {
-    return sampleProducts.filter((product) => {
+    return products.filter((product) => {
       const matchesSearch = 
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase());
       
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-      const matchesAge = selectedAgeRange === 'All' || product.ageRange === selectedAgeRange;
 
-      return matchesSearch && matchesCategory && matchesAge;
+      return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory, selectedAgeRange]);
+  }, [products, searchQuery, selectedCategory]);
 
   const clearFilters = () => {
     setSearchQuery('');
     setSelectedCategory('All');
-    setSelectedAgeRange('All');
   };
 
-  const hasActiveFilters = searchQuery !== '' || selectedCategory !== 'All' || selectedAgeRange !== 'All';
+  const hasActiveFilters = searchQuery !== '' || selectedCategory !== 'All';
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,13 +50,13 @@ const Products: React.FC = () => {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">Toy Collection</h1>
-                <p className="text-muted-foreground mt-1">Discover the perfect playmate for every age</p>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">Product Collection</h1>
+                <p className="text-muted-foreground mt-1">Discover our premium collection</p>
               </div>
               <div className="relative w-full md:w-96 group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
-                  placeholder="Search toys..."
+                  placeholder="Search products..."
                   className="pl-10 h-12 bg-card border-border/50 focus:border-primary/50 transition-all"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -93,21 +89,6 @@ const Products: React.FC = () => {
                   <SelectItem value="All">All Categories</SelectItem>
                   {CATEGORIES.map((cat) => (
                     <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select 
-                value={selectedAgeRange}
-                onValueChange={(value) => setSelectedAgeRange(value as AgeRange | 'All')}
-              >
-                <SelectTrigger className="w-[180px] h-10 bg-card rounded-full border-border/40">
-                  <SelectValue placeholder="Age Range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All">All Ages</SelectItem>
-                  {AGE_RANGES.map((range) => (
-                    <SelectItem key={range} value={range}>{range}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -173,7 +154,7 @@ const Products: React.FC = () => {
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
               <Search className="h-10 w-10 text-muted-foreground/50" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">No toys found</h3>
+            <h3 className="text-xl font-semibold mb-2">No products found</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
               We couldn't find any products matching your current filters. Try adjusting your search or clearing the filters.
             </p>

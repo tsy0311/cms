@@ -49,12 +49,14 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
 
-        {/* Age Range Badge */}
-        <div className="absolute top-3 left-3">
-          <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
-            {product.ageRange}
-          </span>
-        </div>
+        {/* Featured Badge */}
+        {product.isFeatured && (
+          <div className="absolute top-3 left-3">
+            <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-sm">
+              Featured
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Product Info */}

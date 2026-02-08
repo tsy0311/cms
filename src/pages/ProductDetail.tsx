@@ -19,7 +19,7 @@ import {
   cn, 
   ROUTE_PATHS 
 } from '@/lib/index';
-import { sampleProducts } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,24 +29,25 @@ import { Separator } from '@/components/ui/separator';
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { products } = useProducts();
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
 
   const product = useMemo(() => 
-    sampleProducts.find((p) => p.id === id), 
-  [id]);
+    products.find((p) => p.id === id), 
+  [products, id]);
 
   if (!product) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-4">
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-foreground">Toy Not Found</h1>
-          <p className="text-muted-foreground">The toy you are looking for might have rolled under the sofa.</p>
+          <h1 className="text-4xl font-bold text-foreground">Product Not Found</h1>
+          <p className="text-muted-foreground">The product you are looking for is not available.</p>
         </div>
         <Button onClick={() => navigate(ROUTE_PATHS.PRODUCTS)} variant="outline">
           <ChevronLeft className="mr-2 h-4 w-4" />
-          Back to Catalog
+          Back to Products
         </Button>
       </div>
     );
@@ -71,7 +72,7 @@ export default function ProductDetail() {
       >
         <Link to={ROUTE_PATHS.HOME} className="hover:text-primary transition-colors">Home</Link>
         <span>/</span>
-        <Link to={ROUTE_PATHS.PRODUCTS} className="hover:text-primary transition-colors">Toys</Link>
+        <Link to={ROUTE_PATHS.PRODUCTS} className="hover:text-primary transition-colors">Products</Link>
         <span>/</span>
         <span className="text-foreground font-medium">{product.name}</span>
       </motion.div>
@@ -91,12 +92,9 @@ export default function ProductDetail() {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute top-6 left-6 flex flex-col gap-2">
-              <Badge className="bg-accent text-accent-foreground border-none px-4 py-1.5 rounded-full shadow-sm font-mono text-xs">
-                AGE: {product.ageRange}
-              </Badge>
               {product.isFeatured && (
                 <Badge className="bg-primary text-primary-foreground border-none px-4 py-1.5 rounded-full shadow-sm">
-                  Featured Toy
+                  Featured
                 </Badge>
               )}
             </div>
@@ -147,7 +145,7 @@ export default function ProductDetail() {
                   />
                 ))}
                 <span className="ml-2 text-sm font-medium text-muted-foreground">
-                  ({product.reviewsCount} verified parents)
+                  ({product.reviewsCount} reviews)
                 </span>
               </div>
               <Separator orientation="vertical" className="h-4" />
@@ -226,24 +224,22 @@ export default function ProductDetail() {
             </div>
 
             {/* Specifications Bento-ish Grid */}
-            <div className="pt-8">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Info className="h-5 w-5 text-primary" />
-                Toy Specifications
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                  <Card key={key} className="p-4 bg-muted/30 border-none rounded-2xl">
-                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{key}</p>
-                    <p className="font-bold text-foreground">{value}</p>
-                  </Card>
-                ))}
-                <Card className="p-4 bg-secondary/20 border-none rounded-2xl">
-                  <p className="text-xs font-mono uppercase tracking-widest text-secondary-foreground/70 mb-1">Age Range</p>
-                  <p className="font-bold text-secondary-foreground">{product.ageRange}</p>
-                </Card>
+            {product.specifications && Object.keys(product.specifications).length > 0 && (
+              <div className="pt-8">
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <Info className="h-5 w-5 text-primary" />
+                  Product Specifications
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {Object.entries(product.specifications).map(([key, value]) => (
+                    <Card key={key} className="p-4 bg-muted/30 border-none rounded-2xl">
+                      <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{key}</p>
+                      <p className="font-bold text-foreground">{value}</p>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Footer Safety Note */}
@@ -252,7 +248,7 @@ export default function ProductDetail() {
               <CheckCircle2 className="h-4 w-4 text-emerald-600" />
             </div>
             <p className="text-sm text-muted-foreground">
-              <span className="font-bold text-foreground">Safety Guarantee 2026:</span> This product meets all international toy safety standards and is made with sustainable, non-toxic materials. Lead-free and BPA-free.
+              <span className="font-bold text-foreground">Quality Guarantee:</span> This product meets all international quality standards and is made with premium materials.
             </p>
           </div>
         </motion.div>

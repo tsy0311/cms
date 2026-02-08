@@ -4,36 +4,29 @@ export const ROUTE_PATHS = {
   PRODUCT_DETAIL: '/product/:id',
   CART: '/cart',
   ADMIN: '/admin',
+  ADMIN_LOGIN: '/admin/login',
 } as const;
 
-export type Category = 'Educational' | 'Plush' | 'Building Blocks' | 'Outdoor' | 'Arts & Crafts' | 'STEM';
-
-export type AgeRange = '0-2 Years' | '3-5 Years' | '6-8 Years' | '9-12 Years' | '13+ Years';
+export type Category = 'Bras' | 'Panties' | 'Homewear' | 'Clothing' | 'Accessories' | 'Combo Deals';
 
 export const CATEGORIES: Category[] = [
-  'Educational',
-  'Plush',
-  'Building Blocks',
-  'Outdoor',
-  'Arts & Crafts',
-  'STEM',
+  'Bras',
+  'Panties',
+  'Homewear',
+  'Clothing',
+  'Accessories',
+  'Combo Deals',
 ];
 
-export const AGE_RANGES: AgeRange[] = [
-  '0-2 Years',
-  '3-5 Years',
-  '6-8 Years',
-  '9-12 Years',
-  '13+ Years',
-];
+// Currency conversion: 1 CNY = 0.65 MYR (approximate)
+export const CNY_TO_MYR_RATE = 0.65;
 
 export interface Product {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: number; // Price in MYR (Malaysian Ringgit)
   category: Category;
-  ageRange: AgeRange;
   image: string;
   stock: number;
   rating: number;
@@ -48,10 +41,17 @@ export interface CartItem {
 }
 
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-MY', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(price);
+}
+
+// Convert Chinese Yuan (CNY) to Malaysian Ringgit (MYR)
+export function convertCNYToMYR(cnyPrice: number): number {
+  return parseFloat((cnyPrice * CNY_TO_MYR_RATE).toFixed(2));
 }
 
 export function calculateSubtotal(items: CartItem[]): number {

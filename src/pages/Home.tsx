@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, Rocket, Heart, ShieldCheck } from 'lucide-react';
 import { ROUTE_PATHS, CATEGORIES, cn } from '@/lib/index';
-import { sampleProducts } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import { ProductCard } from '@/components/ProductCard';
 import { IMAGES } from '@/assets/images';
 
@@ -26,7 +26,8 @@ const staggerContainer = {
 };
 
 export default function Home() {
-  const featuredProducts = sampleProducts.filter((p) => p.isFeatured).slice(0, 4);
+  const { products } = useProducts();
+  const featuredProducts = products.filter((p) => p.isFeatured).slice(0, 4);
 
   return (
     <div className="flex flex-col gap-16 pb-24">
@@ -35,7 +36,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img
             src={IMAGES.KIDS_PLAYING_5}
-            alt="Kids playing with toys"
+            alt="Product showcase"
             className="w-full h-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
@@ -62,7 +63,7 @@ export default function Home() {
               transition={springPresets.gentle}
               className="text-5xl md:text-7xl font-extrabold leading-tight mb-6"
             >
-              Where Every <span className="text-primary">Toy</span> Tells a Story
+              Discover Your <span className="text-primary">Perfect Style</span>
             </motion.h1>
 
             <motion.p
@@ -70,8 +71,8 @@ export default function Home() {
               transition={springPresets.gentle}
               className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed"
             >
-              Explore our curated collection of educational, sustainable, and purely magical toys 
-              designed to spark imagination and joy for the next generation.
+              Explore our premium collection of comfortable and stylish products 
+              designed for everyday elegance and comfort.
             </motion.p>
 
             <motion.div
@@ -102,7 +103,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-bold mb-2">Explore by Category</h2>
-            <p className="text-muted-foreground">Find the perfect playmate for every interest</p>
+            <p className="text-muted-foreground">Find the perfect products for your style</p>
           </div>
           <Link
             to={ROUTE_PATHS.PRODUCTS}
@@ -139,7 +140,7 @@ export default function Home() {
       <section id="featured" className="container mx-auto px-4">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold mb-2">Our Best Sellers</h2>
-          <p className="text-muted-foreground">Loved by parents, adored by children</p>
+          <p className="text-muted-foreground">Loved by customers worldwide</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -164,8 +165,8 @@ export default function Home() {
               Eco-Friendly Play for a <br /> Brighter Tomorrow
             </h2>
             <p className="text-lg text-background/80 mb-10 leading-relaxed">
-              In 2026, we've committed to 100% sustainable materials. 
-              Join our mission to provide safe, plastic-free toys that don't cost the Earth.
+              In 2026, we've committed to 100% premium quality materials. 
+              Join our mission to provide comfortable, stylish products that don't compromise on quality.
             </p>
             <Link
               to={ROUTE_PATHS.PRODUCTS}
@@ -200,7 +201,7 @@ export default function Home() {
                 <Heart className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">Made with Love</h3>
-              <p className="text-muted-foreground">Carefully selected toys that support healthy child development.</p>
+              <p className="text-muted-foreground">Carefully selected products that support your comfort and style.</p>
             </div>
           </div>
         </div>
@@ -227,7 +228,7 @@ export default function Home() {
             </button>
           </form>
           <p className="mt-6 text-xs text-muted-foreground">
-            © 2026 ToyStore Co. All rights reserved. 
+            © 2026 Premium Store Co. All rights reserved. 
           </p>
         </div>
       </section>

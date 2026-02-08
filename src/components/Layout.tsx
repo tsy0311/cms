@@ -42,7 +42,6 @@ export function Layout({ children }: LayoutProps) {
   const navLinks = [
     { name: 'Home', path: ROUTE_PATHS.HOME },
     { name: 'Shop All', path: ROUTE_PATHS.PRODUCTS },
-    { name: 'Admin', path: ROUTE_PATHS.ADMIN },
   ];
 
   return (

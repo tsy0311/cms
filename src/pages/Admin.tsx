@@ -18,10 +18,9 @@ import {
   Product,
   formatPrice,
   cn,
-  CATEGORIES,
-  AGE_RANGES
+  CATEGORIES
 } from '@/lib/index';
-import { sampleProducts } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import { ExcelUpload } from '@/components/ExcelUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,13 +44,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
 export default function Admin() {
-  const [products, setProducts] = useState<Product[]>(sampleProducts);
+  const { products, replaceAllProducts, isInitialized } = useProducts();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleUpload = (newProducts: Product[]) => {
-    setProducts((prev) => [...newProducts, ...prev]);
-    toast.success(`Successfully imported ${newProducts.length} products`);
+  const handleUpload = async (newProducts: Product[]) => {
+    try {
+      await replaceAllProducts(newProducts);
+      toast.success(`Successfully imported ${newProducts.length} products. All existing products have been replaced.`);
+    } catch (error) {
+      console.error('Failed to import products:', error);
+      toast.error('Failed to import products. Please try again.');
+    }
   };
+
+  // Show loading state while products are being loaded
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-background p-6 md:p-10 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -96,7 +112,7 @@ export default function Admin() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-muted-foreground">
-            Manage your toy inventory and bulk import products from Excel.
+            Manage your product inventory and bulk import products from Excel.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -104,7 +120,7 @@ export default function Admin() {
             <Filter className="w-4 h-4" /> Filters
           </Button>
           <Button className="gap-2 shadow-lg shadow-primary/20">
-            <Plus className="w-4 h-4" /> Add Toy
+            <Plus className="w-4 h-4" /> Add Product
           </Button>
         </div>
       </header>
@@ -153,8 +169,8 @@ export default function Admin() {
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <CardTitle>Toy Collection</CardTitle>
-                  <CardDescription>A list of all toys currently in your store.</CardDescription>
+                  <CardTitle>Product Collection</CardTitle>
+                  <CardDescription>A list of all products currently in your store.</CardDescription>
                 </div>
                 <div className="relative w-full md:w-80">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -172,11 +188,10 @@ export default function Admin() {
                 <Table>
                   <TableHeader className="bg-muted/30">
                     <TableRow>
-                      <TableHead>Toy</TableHead>
+                      <TableHead>Product</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Price</TableHead>
                       <TableHead>Stock</TableHead>
-                      <TableHead>Age Range</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -214,9 +229,6 @@ export default function Admin() {
                               {product.stock} units
                             </div>
                           </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {product.ageRange}
-                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -231,8 +243,8 @@ export default function Admin() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                          No toys found matching your search.
+                        <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                          No products found matching your search.
                         </TableCell>
                       </TableRow>
                     )}
@@ -251,7 +263,7 @@ export default function Admin() {
                   <CardTitle>Bulk Excel Upload</CardTitle>
                   <CardDescription>
                     Import multiple products at once. Your Excel file should include columns for
-                    Name, Description, Price, Category, Age Range, and Image URL.
+                    Name, Description, Price (in CNY), Category, and Image URL. Prices will be automatically converted to MYR.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -272,14 +284,6 @@ export default function Admin() {
                     </div>
                     <p className="text-sm">
                       Ensure category names match the predefined list: {CATEGORIES.join(', ')}.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="mt-1">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    </div>
-                    <p className="text-sm">
-                      Age ranges should be exactly: {AGE_RANGES.join(', ')}.
                     </p>
                   </div>
                   <div className="flex gap-3">

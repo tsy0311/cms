@@ -4,12 +4,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ROUTE_PATHS } from "@/lib/index";
+import { AuthProvider } from "@/context/AuthContext";
 import { Layout } from "@/components/Layout";
+import { AdminLayout } from "@/components/AdminLayout";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
 import Cart from "@/pages/Cart";
 import Admin from "@/pages/Admin";
+import AdminLogin from "@/pages/AdminLogin";
 
 /**
  * Toy Store E-commerce Platform - 2026 Edition
@@ -28,53 +32,78 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <Layout>
+      <AuthProvider>
+        <TooltipProvider>
+          <BrowserRouter>
             <Routes>
-              {/* Homepage: Hero, Featured Toys, Categories */}
+              {/* Customer-facing routes with main Layout */}
               <Route 
                 path={ROUTE_PATHS.HOME} 
-                element={<Home />} 
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                } 
               />
 
-              {/* Product Listing: Catalog with Filtering and Search */}
               <Route 
                 path={ROUTE_PATHS.PRODUCTS} 
-                element={<Products />} 
+                element={
+                  <Layout>
+                    <Products />
+                  </Layout>
+                } 
               />
 
-              {/* Product Details: Specs, Reviews, and Cart Actions */}
               <Route 
                 path={ROUTE_PATHS.PRODUCT_DETAIL} 
-                element={<ProductDetail />} 
+                element={
+                  <Layout>
+                    <ProductDetail />
+                  </Layout>
+                } 
               />
 
-              {/* Shopping Cart: Item Management and Checkout Entry */}
               <Route 
                 path={ROUTE_PATHS.CART} 
-                element={<Cart />} 
+                element={
+                  <Layout>
+                    <Cart />
+                  </Layout>
+                } 
               />
 
-              {/* Admin Dashboard: Excel Bulk Upload and Management */}
-              <Route 
-                path={ROUTE_PATHS.ADMIN} 
-                element={<Admin />} 
+              {/* Admin routes with separate layout */}
+              <Route path={ROUTE_PATHS.ADMIN_LOGIN} element={<AdminLogin />} />
+              
+              <Route
+                path={ROUTE_PATHS.ADMIN}
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminLayout>
+                      <Admin />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
               />
 
               {/* Fallback Route: Redirect to Home for unmatched paths */}
               <Route 
                 path="*" 
-                element={<Home />} 
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                } 
               />
             </Routes>
-          </Layout>
-        </BrowserRouter>
+          </BrowserRouter>
 
-        {/* Global UI Feedback Systems */}
-        <Toaster />
-        <Sonner position="top-right" expand={false} richColors />
-      </TooltipProvider>
+          {/* Global UI Feedback Systems */}
+          <Toaster />
+          <Sonner position="top-right" expand={false} richColors />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

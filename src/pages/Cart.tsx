@@ -40,7 +40,7 @@ export default function Cart() {
   if (!isInitialized) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading your toys...</div>
+        <div className="animate-pulse text-muted-foreground">Loading your cart...</div>
       </div>
     );
   }
@@ -58,11 +58,11 @@ export default function Cart() {
           </div>
           <h1 className="text-3xl font-bold mb-4">Your cart is empty</h1>
           <p className="text-muted-foreground mb-8">
-            Looks like you haven't added any magic to your cart yet. Explore our collection of toys to get started!
+            Looks like you haven't added any items to your cart yet. Explore our collection of products to get started!
           </p>
           <Link to={ROUTE_PATHS.PRODUCTS}>
             <Button size="lg" className="rounded-full px-8">
-              Browse Toys
+              Browse Products
             </Button>
           </Link>
         </motion.div>
@@ -118,9 +118,6 @@ export default function Cart() {
                       <div className="flex gap-2 mt-1">
                         <span className="text-xs font-mono bg-muted text-muted-foreground px-2 py-0.5 rounded">
                           {item.product.category}
-                        </span>
-                        <span className="text-xs font-mono bg-accent/30 text-accent-foreground px-2 py-0.5 rounded">
-                          AGE: {item.product.ageRange}
                         </span>
                       </div>
                     </div>
